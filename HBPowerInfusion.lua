@@ -175,6 +175,39 @@ function HBPowerInfusion:SetPIFocus()
   end
 end
 
+local function FindBuff(obuff,unit)
+  local buff = strlower(obuff)
+  local tooltip = HB_Tooltip or CreateFrame("GameTooltip", "HB_Tooltip", nil, "GameTooltipTemplate")
+  tooltip:Hide()
+  tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+  local textleft1 = getglobal(tooltip:GetName().."TextLeft1")
+  if ( not unit ) then
+    unit ='player'
+  end
+  local c
+  for i = 1,32 do
+    tooltip:SetUnitBuff(unit, i)
+    b = textleft1:GetText()
+    tooltip:Hide()
+    if ( b and strfind(strlower(b), buff) ) then
+      return "buff", i, b
+    elseif ( c==b ) then
+      break
+    end
+  end
+  c=nil
+  for i= 1,32 do
+    tooltip:SetUnitDebuff(unit, i)
+    b = textleft1:GetText()
+    if ( b and strfind(strlower(b), buff) ) then
+      return "debuff", i, b
+    elseif ( c == b) then
+      break
+    end
+  end
+end
+
+
 function HBPowerInfusion:PowerInfusionInform()
   if lastWhisperTime and lastWhisperTime > GetTime() - 30 then
     return
